@@ -17,7 +17,7 @@
  *
  */
 
-package org.wso2.checklist.utils;
+package org.wso2.checklistservice.beans;
 
 import org.wso2.carbon.config.annotation.Configuration;
 import org.wso2.carbon.config.annotation.Element;
@@ -33,17 +33,15 @@ public class RRMConfigurations {
     /**
      * Configuration bean class for dashboard RRM dashboards.
      *
-     * @since 1.0.0
+     * @since 4.0.0
      */
 
     @Element(description = "checklistBackendUrl")
     private String checklistBackendUrl = "";
 
     public String getChecklistBackendUrl() {
+
         return checklistBackendUrl;
     }
 
 }
-
-
-

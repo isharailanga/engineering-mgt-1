@@ -16,22 +16,20 @@
  * under the License.
  */
 
-package org.wso2.checklist.utils;
+package org.wso2.checklistservice.internal;
 
 import org.wso2.carbon.config.provider.ConfigProvider;
 
-
 /**
- * Data holder to hold reference to IdPClient OSGi service
+ * Data holder to hold reference to IdPClient OSGi service.
  */
-
- public class DataHolder {
+public class DataHolder {
 
     private static DataHolder instance = new DataHolder();
     private ConfigProvider configProvider;
 
     private DataHolder() {
-    
+
     }
 
     /**
@@ -40,14 +38,17 @@ import org.wso2.carbon.config.provider.ConfigProvider;
      * @return Instance of DataHolder
      */
     public static DataHolder getInstance() {
+
         return instance;
     }
 
     public ConfigProvider getConfigProvider() {
+
         return configProvider;
     }
 
     public void setConfigProvider(ConfigProvider configProvider) {
+
         this.configProvider = configProvider;
     }
- }
+}
