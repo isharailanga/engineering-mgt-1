@@ -1,4 +1,4 @@
-import React, { Component, Children } from 'react';
+import React, { Component, Children, version } from 'react';
 
 import { MuiThemeProvider, withStyles} from '@material-ui/core/styles';
 
@@ -10,6 +10,8 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import axios from 'axios';
+
+const hostUrl = "https://" + window.location.host + window.contextPath + "/apis/checklist";
 
 
 const styles = theme => ({
@@ -64,16 +66,25 @@ class HelloWorld extends Component {
             selected_ProductName: '',
             productNameList: [],
             selected_ProductVersion: '',
-            productVersionList: [
-                { label : "Version 1", value : '1'},
-                { label : "Version 2", value : '2'},
-                { label : "Version 3", value : '3'},
-            ]
+            productVersionList: []
         };
 
         this.handleChange = event => {
             this.setState({ [event.target.name]: event.target.value });
         };
+
+        this.handleChange_ProductName = event => {
+            this.setState ({ [event.target.name] : event.target.value });
+            this.setState({
+                selected_ProductName : event.target.value
+            }, function () {
+                console.log("The selected product name is : " + this.state.selected_ProductName);
+            });   
+        };
+
+        this.handleChange_ProductVersion = event => {
+            this.setState ({ [event.target.name] : event.target.value });
+        }
     }
 
     // componentDidMount() {
@@ -96,24 +107,65 @@ class HelloWorld extends Component {
     // }
     
     componentDidMount() {
+        const getProductNamesURL = hostUrl + '/productNames';
         axios.create({
             withCredentials:false,
         })
-        .get("https://"+window.location.host + window.contextPath + "/apis/checklist/productNames")
+        .get(getProductNamesURL)
         .then(
             res => {
                 var response = res.data;
-                console.log(window.contextPath);
+                console.log(response);
 
-                let productsFromApi = response.map(products => {
-                    return {label : products, value : products }
+                let productsFromApi = response.products.map(products => {
+                    return {productName : products}
                 });
 
-                this.setState({productNameList : productsFromApi });
+                this.setState({productNameList : productsFromApi }, function () {
+                    console.log(this.state.productNameList)
+                });
             })
         .catch(error => {
             console.log(error)
-        });
+        });           
+         
+    } //End of componentDidMount
+
+    componentDidUpdate(prevProps, prevState) {
+        if(this.state.selected_ProductName !== prevState.selected_ProductName) {
+            console.log("Product Name has changed")
+            const getVersionsURL = hostUrl + '/versions?productName=' + this.state.selected_ProductName;
+            axios.create({
+                withCredentials : false,
+            })
+            .get(getVersionsURL)
+            .then( 
+                res => {
+                    var response = res.data;
+                    console.log(response);
+
+                    let versionsFromApi = response.versions.map(
+                        versions => {
+                            return { versionTitle : versions.title, versionNumber : versions.number }
+                        }
+                    );
+
+                    this.setState({productVersionList : versionsFromApi.map(
+                        versionsFromApi => ({
+                            versionTitle : versionsFromApi.versionTitle,
+                            versionNumber : versionsFromApi.versionNumber
+                        }))
+                    }, function () {
+                        console.log(this.state.productVersionList);
+                    })
+                }
+
+            )
+            .catch(error => {
+                console.log(error);
+            });
+        }
+
     }
 
     render() {
@@ -133,7 +185,7 @@ class HelloWorld extends Component {
 
                     {/* Heading Div */}
                     <div>
-                        <h2><center> Release Readiness Metrics !A? </center></h2>
+                        <h2><center> Release Readiness Metrics </center></h2>
                     </div>
 
                     {/* Select Div */}
@@ -143,15 +195,14 @@ class HelloWorld extends Component {
                             <InputLabel htmlFor = "product-name"> Product Name</InputLabel>
                             <Select
                                 value = { this.state.selected_ProductName }
-                                onChange = { this.handleChange }
+                                onChange = { this.handleChange_ProductName }
                                 inputProps = {{ 
                                     name : 'selected_ProductName',
                                     id : 'product-name' 
                                 }}
                             >
                                 {this.state.productNameList.map(
-                                    (product) => 
-                                        <MenuItem value = {product.value}> {product.label} </MenuItem> 
+                                    (product) => <MenuItem value = {product.productName}> {product.productName} </MenuItem> 
                                 )}
             
                             </Select>
@@ -162,14 +213,14 @@ class HelloWorld extends Component {
                             <InputLabel htmlFor = "product-version"> Product Version </InputLabel>
                             <Select
                                 value = { this.state.selected_ProductVersion }
-                                onChange = { this.handleChange }
+                                onChange = { this.handleChange_ProductVersion }
                                 inputProps = {{
                                     name : 'selected_ProductVersion',
                                     id : 'product-version'
                                 }}
                             >
                                 {this.state.productVersionList.map(
-                                    (version) => <MenuItem value = {version.value}> {version.label} </MenuItem>
+                                    (version) => <MenuItem value = {version.versionNumber}> {version.versionTitle} </MenuItem>
                                 )}
 
                             </Select>
