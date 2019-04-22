@@ -95,4 +95,77 @@ public class ChecklistServiceProvider {
         return response;
     }
 
+    public Object retrieveMergedPRCount(String product, String version) throws IOException, URISyntaxException {
+
+        String response;
+        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
+            URI uri = new URI(hostUrl + "/checklist/mprCount/" + product.replace(" ", "%20"));
+
+            URIBuilder uriBuilder = new URIBuilder(uri);
+            uriBuilder.addParameter("version", version);
+
+            HttpGet httpGet = new HttpGet(uriBuilder.build());
+
+            try (CloseableHttpResponse response1 = httpclient.execute(httpGet)) {
+                HttpEntity entity1 = response1.getEntity();
+                response = EntityUtils.toString(entity1, "UTF-8");
+            }
+        }
+        return response;
+    }
+
+    public Object retrieveGitIssueSummaryCount(String product, String version) throws IOException, URISyntaxException {
+
+        String response;
+        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
+            URI uri = new URI(hostUrl + "/checklist/gitIssues/" + product.replace(" ", "%20"));
+
+            URIBuilder uriBuilder = new URIBuilder(uri);
+            uriBuilder.addParameter("version", version);
+
+            HttpGet httpGet = new HttpGet(uriBuilder.build());
+
+            try (CloseableHttpResponse response1 = httpclient.execute(httpGet)) {
+                HttpEntity entity1 = response1.getEntity();
+                response = EntityUtils.toString(entity1, "UTF-8");
+            }
+        }
+        return response;
+    }
+
+    public Object retrieveDependencySummary(String product) throws IOException, URISyntaxException {
+
+        String response;
+        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
+            URI uri = new URI(hostUrl + "/checklist/dependency/" + product.replace(" ", "%20"));
+
+            URIBuilder uriBuilder = new URIBuilder(uri);
+
+            HttpGet httpGet = new HttpGet(uriBuilder.build());
+
+            try (CloseableHttpResponse response1 = httpclient.execute(httpGet)) {
+                HttpEntity entity1 = response1.getEntity();
+                response = EntityUtils.toString(entity1, "UTF-8");
+            }
+        }
+        return response;
+    }
+
+    public Object retrieveCodeCovSummary(String product) throws IOException, URISyntaxException {
+
+        String response;
+        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
+            URI uri = new URI(hostUrl + "/checklist/codeCoverage/" + product.replace(" ", "%20"));
+
+            URIBuilder uriBuilder = new URIBuilder(uri);
+
+            HttpGet httpGet = new HttpGet(uriBuilder.build());
+
+            try (CloseableHttpResponse response1 = httpclient.execute(httpGet)) {
+                HttpEntity entity1 = response1.getEntity();
+                response = EntityUtils.toString(entity1, "UTF-8");
+            }
+        }
+        return response;
+    }
 }
