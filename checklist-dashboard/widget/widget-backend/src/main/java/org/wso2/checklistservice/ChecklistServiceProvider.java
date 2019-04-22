@@ -113,4 +113,22 @@ public class ChecklistServiceProvider {
         }
         return response;
     }
+
+    public Object retrieveDependencySummary(String product) throws IOException, URISyntaxException {
+
+        String response;
+        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
+            URI uri = new URI(hostUrl + "/checklist/dependency/" + product.replace(" ", "%20"));
+
+            URIBuilder uriBuilder = new URIBuilder(uri);
+
+            HttpGet httpGet = new HttpGet(uriBuilder.build());
+
+            try (CloseableHttpResponse response1 = httpclient.execute(httpGet)) {
+                HttpEntity entity1 = response1.getEntity();
+                response = EntityUtils.toString(entity1, "UTF-8");
+            }
+        }
+        return response;
+    }
 }
