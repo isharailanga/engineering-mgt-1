@@ -66,11 +66,11 @@ class HelloWorld extends Component {
             selected_ProductName: '',
             productNameList: [],
             selected_ProductVersion: '',
-            productVersionList: []
-        };
-
-        this.handleChange = event => {
-            this.setState({ [event.target.name]: event.target.value });
+            productVersionList: [],
+            dependencySummary : '',
+            codeCoverage : '',
+            gitIssues : '',
+            mergedPRCount : '',
         };
 
         this.handleChange_ProductName = event => {
@@ -87,27 +87,9 @@ class HelloWorld extends Component {
         }
     }
 
-    // componentDidMount() {
-    //     fetch("https://"+window.location.host+window.contextPath+"/apis/checklist/productnames")
-    //     .then(
-    //         (response) => {
-    //             return response.json();
-    //         }
-    //     )
-    //     .then(
-    //         data => {
-                
-    //             let productsFromApi = data.products.map(products => { return {label : products, value : products} });
-    //             this.setState({ productNameList : productsFromApi });
-    //         } 
-    //     )
-    //     .catch(error => {
-    //         console.log(error);
-    //     });
-    // }
-    
     componentDidMount() {
         const getProductNamesURL = hostUrl + '/productNames';
+       
         axios.create({
             withCredentials:false,
         })
@@ -134,11 +116,16 @@ class HelloWorld extends Component {
     componentDidUpdate(prevProps, prevState) {
         if(this.state.selected_ProductName !== prevState.selected_ProductName) {
             console.log("Product Name has changed")
-            const getVersionsURL = hostUrl + '/versions?productName=' + this.state.selected_ProductName;
+            let info = { productName : this.state.selected_ProductName }
+            
+            //let versionURL = hostUrl + '/versions/' + this.state.selected_ProductName;
+            //versionURL = appendQuery(versionURL, info);
+            let versionURL = "https://www.mocky.io/v2/5cbda36a2f0000740c16ce35";
+            
             axios.create({
                 withCredentials : false,
             })
-            .get(getVersionsURL)
+            .get(versionURL)
             .then( 
                 res => {
                     var response = res.data;
@@ -164,6 +151,94 @@ class HelloWorld extends Component {
             .catch(error => {
                 console.log(error);
             });
+        }
+
+        if(this.state.selected_ProductVersion !== prevState.selected_ProductVersion) {
+            console.log("Product version has changed");
+    
+            let dependencyURL = hostUrl + '/dependency/' + this.state.selected_ProductName;
+
+            let codeCoverageURL = hostUrl + '/codeCoverage/' + this.state.selected_ProductName;
+
+            let gitIssuesURL = hostUrl + '/gitIssues/' + this.state.selected_ProductName;
+
+            let mergedPRCountURL = hostUrl + '/mprCount/' + this.state.selected_ProductName;
+            let info = { version : this.state.selected_ProductName }
+            mergedPRCountURL = appendQuery(mergedPRCountURL, info);
+            
+
+            //Dependency Summary
+            axios.create({
+                withCredentials : false,
+            })
+            .get(dependencyURL)
+            .then(
+                res => {
+                    var response = res.data;
+                    this.setState({ dependencySummary : response }, 
+                        function() {
+                            console.log(this.state.dependencySummary);
+                        }
+                    );
+                }
+            ).catch(error => {
+                console.log(error);
+            });
+
+            //Code coverage
+            axios.create({
+                withCredentials : false,
+            })
+            .get(codeCoverageURL)
+            .then(
+                res => {
+                    var response = res.data;
+                    this.setState({codeCoverage : response },
+                        function() {
+                            console.log(this.state.codeCoverage);
+                        }
+                    );
+                }
+            ).catch(error => {
+                console.log(error);
+            });
+
+            
+            //Git issues 
+            axios.create({
+                withCredentials : false,
+            })
+            .get(gitIssuesURL)
+            .then(
+                res => {
+                    var response = res.data;
+                    this.setState( { gitIssues : response },
+                        function() {
+                            console.log(this.state.gitIssues);
+                        }
+                    );
+                }
+            ).catch(error => {
+                console.log(error);
+            });
+
+            axios.create({
+                withCredentials : false,
+            })
+            .get(mergedPRCountURL)
+            .then(
+                res => {
+                    var response = res.data;
+                    this.setState({ mergedPRCount : response },
+                        function() {
+                            console.log(this.state.mergedPRCount);    
+                        }
+                    );
+                }
+            ).catch(error => {
+                console.log(error);
+            });
+
         }
 
     }
@@ -227,7 +302,6 @@ class HelloWorld extends Component {
                         </FormControl>
                     </div>
 
-
                     {/* Table Div */}
                     <div style = {TableDiv_style}>
                         <Table style = {TableBorder_style}>
@@ -247,7 +321,7 @@ class HelloWorld extends Component {
                                 <TableRow>
                                     <TableCell> <b> GREEN </b> </TableCell>
                                     <TableCell align = "center">
-                                        <Tooltip title = "Shows the performance results" placement = "top">
+                                        <Tooltip title = "Shows the security scan results" placement = "top">
                                             <p>Security Scan Reports</p>
                                         </Tooltip>
                                     </TableCell>
@@ -259,8 +333,8 @@ class HelloWorld extends Component {
                                 <TableRow>
                                     <TableCell> <b> RED </b> </TableCell>
                                     <TableCell align = "center">
-                                        <Tooltip title = "Shows the performance results" placement = "top">
-                                            <p>Performance Results</p>
+                                        <Tooltip title = "Shows the Analysis Report results" placement = "top">
+                                            <p>Performance Analysis Report</p>
                                         </Tooltip>
                                     </TableCell>
                                     <TableCell>
@@ -283,60 +357,124 @@ class HelloWorld extends Component {
                                 <TableRow>
                                     <TableCell> <b> GREEN </b> </TableCell>
                                     <TableCell align = "center">
-                                            <p>L1 Issues</p>
+                                        <Tooltip title = "Shows security issues identified by customers" 
+                                            placement = "top">
+                                            <p>Security issues by customers</p>
+                                        </Tooltip>
                                     </TableCell>
                                     <TableCell>
-                                        <a href = "Link" > 3 </a>
+                                        <a href = "Link" > 3 open </a>/ 4 Total
                                     </TableCell>
                                 </TableRow>
 
                                 <TableRow>
                                     <TableCell> <b> GREEN </b> </TableCell>
                                     <TableCell align = "center">
-                                            <p>L2 Issues</p>
+                                        <Tooltip title = "Shows security issues identified by external security researchers and OSS users" 
+                                            placement = "top">
+                                            <p>Security issues by external testing</p>
+                                        </Tooltip>
                                     </TableCell>
                                     <TableCell>
-                                        <a href = "Link" > 6 </a>
+                                        <a href = "Link" > 3 open </a>/ 4 Total
                                     </TableCell>
                                 </TableRow>
 
                                 <TableRow>
                                     <TableCell> <b> GREEN </b> </TableCell>
                                     <TableCell align = "center">
-                                            <p>L3 Issues</p>
+                                        <Tooltip title = "Shows security issues identified by internal security testing" 
+                                            placement = "top">
+                                            <p>Security issues by internal testing</p>
+                                        </Tooltip>
                                     </TableCell>
                                     <TableCell>
-                                        <a href = "Link" > 9 </a>
+                                        <a href = "Link" > 3 open </a>/ 4 Total
+                                    </TableCell>
+                                </TableRow>
+
+
+                                <TableRow>
+                                    <TableCell> <b> GREEN </b> </TableCell>
+                                    <TableCell align = "center">
+                                            <p> <b>L1 Issues</b> </p>
+                                    </TableCell>
+                                    <TableCell>
+                                        <a href = "Link"> { this.state.gitIssues.L1Issues } </a> 
                                     </TableCell>
                                 </TableRow>
 
                                 <TableRow>
                                     <TableCell> <b> GREEN </b> </TableCell>
                                     <TableCell align = "center">
-                                            <p>Line coverage in main repos</p>
+                                            <p> <b>L2 Issues</b> </p>
                                     </TableCell>
                                     <TableCell>
-                                        <a href = "Link" > 30% </a>
+                                        <a href = "Link"> { this.state.gitIssues.L2Issues } </a>
                                     </TableCell>
                                 </TableRow>
 
                                 <TableRow>
                                     <TableCell> <b> GREEN </b> </TableCell>
                                     <TableCell align = "center">
-                                            <p>Merged PRs with pending Doc tasks</p>
+                                            <p> <b>L3 Issues</b> </p>
                                     </TableCell>
                                     <TableCell>
-                                        <a href = "Link" > 12 </a>
+                                        <a href = "Link"> { this.state.gitIssues.L3Issues } </a>
+                                    </TableCell>
+                                </TableRow>
+
+                                <TableRow>
+                                    <TableCell> <b> GREEN </b> </TableCell>
+                                    <TableCell align = "center">
+                                        <p><b>Code coverage</b></p>
+                                    </TableCell>
+                                    <TableCell>
+                                        <ul>
+                                            <li>
+                                                <a href = "Link">{ this.state.codeCoverage.instructionCov }</a>
+                                                 % : Instruction coverage
+                                            </li>
+                                            <li>
+                                                <a href = "Link">{ this.state.codeCoverage.complexityCov }</a>
+                                                % : Complexity coverage
+                                            </li>
+                                            <li>
+                                                <a href = "Link">{ this.state.codeCoverage.lineCov }</a>
+                                                % : Line coverage
+                                            </li>
+                                            <li>
+                                                <a href = "Link">{ this.state.codeCoverage.methodCov }</a>
+                                                % : Method coverage
+                                            </li>
+                                            <li>
+                                                <a href = "Link">{ this.state.codeCoverage.classCov }</a>
+                                                % : Class coverage 
+                                            </li>
+
+                                        </ul>
+                                        
+                                    
+                                    </TableCell>
+                                </TableRow>
+
+                                <TableRow>
+                                    <TableCell> <b> GREEN </b> </TableCell>
+                                    <TableCell align = "center">
+                                            <p><b>Merged PRs with pending Doc tasks</b></p>
+                                    </TableCell>
+                                    <TableCell>
+                                        <a href = "Link">{ this.state.mergedPRCount.mprCount }</a> 
                                     </TableCell>
                                 </TableRow>
 
                                 <TableRow>
                                     <TableCell> <b> RED </b> </TableCell>
                                     <TableCell align = "center">
-                                            <p>Dependancies where the next version available is smaller than a patch</p>
+                                            <p><b>Dependancies where the next version available is smaller than a patch</b></p>
                                     </TableCell>
                                     <TableCell>
-                                        <a href = "Link" > 11 </a>
+                                        <a href = "Link">{ this.state.dependencySummary.dependencySummary }</a> 
                                     </TableCell>
                                 </TableRow>
                             </TableBody>
