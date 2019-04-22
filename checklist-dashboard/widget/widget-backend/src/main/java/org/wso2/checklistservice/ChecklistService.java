@@ -125,6 +125,22 @@ public class ChecklistService implements Microservice {
         }
     }
 
+    @GET
+    @Path("/jiraIssues/{productName}")
+    @Produces({"application/json"})
+    public Response retrieveJiraIssueSummary(@Context Request request,
+                                     @PathParam("productName") String productName,
+                                     @DefaultValue("") @QueryParam("version") String version,
+                                     @DefaultValue("") @QueryParam("issueType") String issueType) {
+
+        try {
+            return okResponse(checklistServiceProvider.retrieveJiraIssueSummaryCount(productName, version, issueType));
+        } catch (Throwable throwable) {
+            LOGGER.error("Error occurred while " + throwable.getMessage(), throwable);
+            return serverErrorResponse("Error occurred while retreving the response from server");
+        }
+    }
+
 
     private static Response okResponse(Object content) {
         return Response.ok().entity(content).build();

@@ -31,7 +31,6 @@ import org.wso2.carbon.uiserver.spi.RestApiProvider;
 import org.wso2.checklistservice.beans.RRMConfigurations;
 import org.wso2.checklistservice.internal.DataHolder;
 
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -122,6 +121,28 @@ public class ChecklistServiceProvider {
 
             URIBuilder uriBuilder = new URIBuilder(uri);
             uriBuilder.addParameter("version", version);
+
+            HttpGet httpGet = new HttpGet(uriBuilder.build());
+
+            try (CloseableHttpResponse response1 = httpclient.execute(httpGet)) {
+                HttpEntity entity1 = response1.getEntity();
+                response = EntityUtils.toString(entity1, "UTF-8");
+            }
+        }
+        return response;
+    }
+
+    public Object retrieveJiraIssueSummaryCount(String product, String version, String issueType)
+            throws IOException, URISyntaxException {
+
+        String response;
+        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
+
+            String labels = version + "," + issueType;
+            URI uri = new URI(hostUrl + "/checklist/jiraIssues/" + product.replace(" ", "%20"));
+            URIBuilder uriBuilder = new URIBuilder(uri);
+            uriBuilder.addParameter("labels", labels);
+            System.out.println("uriBuilder-->"+uriBuilder);
 
             HttpGet httpGet = new HttpGet(uriBuilder.build());
 
