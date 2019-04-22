@@ -139,10 +139,10 @@ public class ChecklistServiceProvider {
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
 
             String labels = version + "," + issueType;
+
             URI uri = new URI(hostUrl + "/checklist/jiraIssues/" + product.replace(" ", "%20"));
             URIBuilder uriBuilder = new URIBuilder(uri);
             uriBuilder.addParameter("labels", labels);
-            System.out.println("uriBuilder-->"+uriBuilder);
 
             HttpGet httpGet = new HttpGet(uriBuilder.build());
 
