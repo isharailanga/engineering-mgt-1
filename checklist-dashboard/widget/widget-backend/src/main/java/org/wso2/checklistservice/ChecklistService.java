@@ -110,6 +110,22 @@ public class ChecklistService implements Microservice {
         }
     }
 
+    @GET
+    @Path("/gitIssues/{productName}")
+    @Produces({"application/json"})
+    public Response retrieveGitIssueSummary(@Context Request request,
+                                     @PathParam("productName") String productName,
+                                     @DefaultValue("") @QueryParam("version") String version) {
+
+        try {
+            return okResponse(checklistServiceProvider.retrieveGitIssueSummaryCount(productName, version));
+        } catch (Throwable throwable) {
+            LOGGER.error("Error occurred while " + throwable.getMessage(), throwable);
+            return serverErrorResponse("Error occurred while retreving the response from server");
+        }
+    }
+
+
     private static Response okResponse(Object content) {
         return Response.ok().entity(content).build();
     }
