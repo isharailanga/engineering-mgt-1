@@ -21,10 +21,12 @@ import org.slf4j.LoggerFactory;
 import org.wso2.msf4j.Microservice;
 import org.wso2.msf4j.Request;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
@@ -54,11 +56,26 @@ public class ChecklistService implements Microservice {
     @GET
     @Path("/versions/{productName}")
     @Produces({"application/json"})
-    public Response retrieveAllIssuesByProduct(@Context Request request,
+    public Response retrieveProductVersions(@Context Request request,
                                                @PathParam("productName") String productName) {
 
         try {
             return okResponse(checklistServiceProvider.retrieveVersions(productName));
+        } catch (Throwable throwable) {
+            LOGGER.error("Error occurred while " + throwable.getMessage(), throwable);
+            return serverErrorResponse("Error occurred while retreving the response from server");
+        }
+    }
+
+    @GET
+    @Path("/mprCount/{productName}")
+    @Produces({"application/json"})
+    public Response retrieveMprCount(@Context Request request,
+                                     @PathParam("productName") String productName,
+                                     @DefaultValue("") @QueryParam("version") String version) {
+
+        try {
+            return okResponse(checklistServiceProvider.retrieveMergedPRCount(productName, version));
         } catch (Throwable throwable) {
             LOGGER.error("Error occurred while " + throwable.getMessage(), throwable);
             return serverErrorResponse("Error occurred while retreving the response from server");
@@ -72,5 +89,6 @@ public class ChecklistService implements Microservice {
     private static Response serverErrorResponse(String message) {
         return Response.serverError().entity(message).build();
     }
+
 
 }
