@@ -96,6 +96,20 @@ public class ChecklistService implements Microservice {
         }
     }
 
+    @GET
+    @Path("/codeCoverage/{productName}")
+    @Produces({"application/json"})
+    public Response retrieveCodeCoverage(@Context Request request,
+                                     @PathParam("productName") String productName) {
+
+        try {
+            return okResponse(checklistServiceProvider.retrieveCodeCovSummary(productName));
+        } catch (Throwable throwable) {
+            LOGGER.error("Error occurred while " + throwable.getMessage(), throwable);
+            return serverErrorResponse("Error occurred while retreving the response from server");
+        }
+    }
+
     private static Response okResponse(Object content) {
         return Response.ok().entity(content).build();
     }
