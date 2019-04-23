@@ -151,15 +151,16 @@ class HelloWorld extends Component {
 
         if(this.state.selected_ProductVersion !== prevState.selected_ProductVersion) {
             console.log("Product version has changed");
+            let info = { version : this.state.selected_ProductVersion }
     
             let dependencyURL = hostUrl + '/dependency/' + this.state.selected_ProductName;
 
             let codeCoverageURL = hostUrl + '/codeCoverage/' + this.state.selected_ProductName;
 
             let gitIssuesURL = hostUrl + '/gitIssues/' + this.state.selected_ProductName;
-
-            let mergedPRCountURL = hostUrl + '/mprCount/' + this.state.selected_ProductName;
-            let info = { version : this.state.selected_ProductVersion }
+            gitIssuesURL = appendQuery(gitIssuesURL, info);
+            
+            let mergedPRCountURL = hostUrl + '/mprCount/' + this.state.selected_ProductName;    
             mergedPRCountURL = appendQuery(mergedPRCountURL, info);
             
 
