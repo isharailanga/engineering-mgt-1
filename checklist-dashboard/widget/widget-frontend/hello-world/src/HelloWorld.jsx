@@ -116,6 +116,7 @@ class HelloWorld extends Component {
     componentDidUpdate(prevProps, prevState) {
         if(this.state.selected_ProductName !== prevState.selected_ProductName) {
             console.log("Product Name has changed")
+
             let info = { productName : this.state.selected_ProductVersion }
             
             let versionURL = hostUrl + '/versions/' + this.state.selected_ProductName;
