@@ -1,6 +1,8 @@
-import { FilledInput, FormControl, InputLabel, MenuItem, Select, Tooltip, createMuiTheme } from '@material-ui/core';
-import { MuiThemeProvider, withStyles } from '@material-ui/core/styles';
-import React, { Children, Component, version } from 'react';
+import React, { Component, Children, version } from 'react';
+
+import { MuiThemeProvider, withStyles} from '@material-ui/core/styles';
+
+import { FormControl, InputLabel, Select, MenuItem, FilledInput, Tooltip, createMuiTheme } from '@material-ui/core';
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -114,11 +116,11 @@ class HelloWorld extends Component {
     componentDidUpdate(prevProps, prevState) {
         if(this.state.selected_ProductName !== prevState.selected_ProductName) {
             console.log("Product Name has changed")
-            let info = { productName : this.state.selected_ProductName }
+
+            let info = { productName : this.state.selected_ProductVersion }
             
-            //let versionURL = hostUrl + '/versions/' + this.state.selected_ProductName;
-            //versionURL = appendQuery(versionURL, info);
-            let versionURL = "https://www.mocky.io/v2/5cbda36a2f0000740c16ce35";
+            let versionURL = hostUrl + '/versions/' + this.state.selected_ProductName;
+            versionURL = appendQuery(versionURL, info);
             
             axios.create({
                 withCredentials : false,
