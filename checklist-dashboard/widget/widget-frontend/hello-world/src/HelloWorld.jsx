@@ -115,12 +115,8 @@ class HelloWorld extends Component {
 
     componentDidUpdate(prevProps, prevState) {
         if(this.state.selected_ProductName !== prevState.selected_ProductName) {
-            console.log("Product Name has changed")
-            let info = { productName : this.state.selected_ProductVersion }
-            
+            console.log("Product Name has changed")            
             let versionURL = hostUrl + '/versions/' + this.state.selected_ProductName;
-            versionURL = appendQuery(versionURL, info);
-            
             axios.create({
                 withCredentials : false,
             })
@@ -162,7 +158,7 @@ class HelloWorld extends Component {
             let gitIssuesURL = hostUrl + '/gitIssues/' + this.state.selected_ProductName;
 
             let mergedPRCountURL = hostUrl + '/mprCount/' + this.state.selected_ProductName;
-            let info = { version : this.state.selected_ProductName }
+            let info = { version : this.state.selected_ProductVersion }
             mergedPRCountURL = appendQuery(mergedPRCountURL, info);
             
 
