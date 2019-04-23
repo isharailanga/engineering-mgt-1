@@ -1,8 +1,6 @@
-import React, { Component, Children, version } from 'react';
-
-import { MuiThemeProvider, withStyles} from '@material-ui/core/styles';
-
-import { FormControl, InputLabel, Select, MenuItem, FilledInput, Tooltip, createMuiTheme } from '@material-ui/core';
+import { FilledInput, FormControl, InputLabel, MenuItem, Select, Tooltip, createMuiTheme } from '@material-ui/core';
+import { MuiThemeProvider, withStyles } from '@material-ui/core/styles';
+import React, { Children, Component, version } from 'react';
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -88,7 +86,7 @@ class HelloWorld extends Component {
     }
 
     componentDidMount() {
-        const getProductNamesURL = hostUrl + '/productNames';
+        const getProductNamesURL = hostUrl + '/products';
        
         axios.create({
             withCredentials:false,
