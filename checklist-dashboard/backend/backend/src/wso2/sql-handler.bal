@@ -63,7 +63,7 @@ function getPendingDocTasks(string product, string milestone) returns (json) {
         json response = {};
 
         // Set the reference link
-        string stringUrl = string `/portal/dashboards/mprdashboard/home`
+        string stringUrl = string `/portal/dashboards/mergedprsummarydashboard/home`
             + string `#{"product":"{{product}}","version":"{{milestone}}"}`;
 
         var count = json.convert(prCount);
